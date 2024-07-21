@@ -98,9 +98,9 @@ def main():
 
     args = parser.parse_args()
 
-    print(f"Parameter Store: {args.store}")
-    print(f"Parameter Location: {args.location}")
-    print(f"Parameter Goal: {args.goal}")
+    print(f"Store: {args.store}")
+    print(f"Location: {args.location}")
+    print(f"Goal: {args.goal}")
     store = args.store
     location = args.location
     goal = args.goal
