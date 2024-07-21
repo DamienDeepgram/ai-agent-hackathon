@@ -143,14 +143,11 @@ async function createCall(toNumber) {
   console.log('Calling: ' + toNumber + '...');
   currentCall = await client.calls.create({
     from: fromPhoneNumber,
-    statusCallback: "https://ce73-104-28-159-244.ngrok-free.app/webhook",
-    // statusCallback: "https://<NGrok URL>/webhook",
+    statusCallback: NGROK_URL + "/webhook",
     statusCallbackEvent: ["completed"],
     statusCallbackMethod: "POST",
     to: toNumber,
-    url: "https://ce73-104-28-159-244.ngrok-free.app/twiml",
-    // url: "https://<NGrok URL>/twiml",
-    
+    url: NGROK_URL + "/twiml",
   });
 
   // console.log(currentCall.sid);
