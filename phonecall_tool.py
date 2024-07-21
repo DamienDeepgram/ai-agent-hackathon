@@ -11,21 +11,13 @@ class PhoneCallTool(BaseTool):
 
     def _run(self, payload: str) -> str:
       """Useful to call a phone number with a goal
-      :param payload: str, a string representation of dictionary containing the following keys:
+      :param payload: str, a string representation of two values seperated by a |
 
-      goal: str, the goal to carry out on the call
-      number: str, the number to call
-
-      example payload:
-      {
-          "goal": "Find out opening hours for Memorial Day.",
-          "number": "+14151234567"
-      }
+      example:
+      1234|abcd
     """
       print(f"values: {payload} {type(payload)}")
-      jsonObj = json.loads(payload)
-      goal = jsonObj['goal']
-      number = jsonObj['number']
+      number, goal = payload.split('|')
 
       transcript = ''
       try:

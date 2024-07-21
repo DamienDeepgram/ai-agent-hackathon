@@ -70,7 +70,7 @@ def callStore(store, address, phoneNumber, goal):
     caller = Agent(
         role='Caller',
         goal=goal,
-        backstory=(f'You are calling {store} to {goal}. Send the following string to the PhoneCallTool \"{{ \"payload\": {{\"number\": \"{phoneNumber}\", \"goal\": \"{goal}\"}} }}\"'),
+        backstory=(f'You are calling {store} to {goal}. Send the following string to the PhoneCallTool "{phoneNumber}|{goal}"'),
         verbose=True,
         allow_delegation=False,
         memory=True,
