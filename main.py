@@ -130,7 +130,7 @@ def main():
     print(f'  Using PhoneCallTool to call: {phoneNumber}')
     openingHours = callStore(store, phoneNumber, goal)
     print(f'CrewAI:')
-    print(f'  Opening Hours - {openingHours}')
+    print(f'  Result - {openingHours}')
     # agentops.end_session('Success')
 
 if __name__ == '__main__':
