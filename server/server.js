@@ -123,7 +123,10 @@ dispatcher.onPost("/webhook", async function (req, res) {
 */
 dispatcher.onPost("/call", async function (req, res) {
   console.log('GET /call');
-  const toNumber = JSON.parse(req.body).number;
+  let toNumber = JSON.parse(req.body).number;
+  if(toNumber){
+    toNumber = toNumber.replaceAll('(', '').replaceAll(')', '').replaceAll('-', '').replaceAll(' ', '').replaceAll('\n', '');
+  }
   const goal = JSON.parse(req.body).goal;
   console.log('goal:', goal);
   await createCall(toNumber, goal);
@@ -141,15 +144,19 @@ dispatcher.onPost("/call", async function (req, res) {
 });
 
 async function createCall(toNumber) {
-  console.log('Calling: ' + toNumber + '...');
-  currentCall = await client.calls.create({
-    from: fromPhoneNumber,
-    statusCallback: NGROK_URL + "/webhook",
-    statusCallbackEvent: ["completed"],
-    statusCallbackMethod: "POST",
-    to: toNumber,
-    url: NGROK_URL + "/twiml",
-  });
+  console.log('Calling: [' + toNumber + ']...');
+  try{
+    currentCall = await client.calls.create({
+      from: fromPhoneNumber,
+      statusCallback: NGROK_URL + "/webhook",
+      statusCallbackEvent: ["completed"],
+      statusCallbackMethod: "POST",
+      to: toNumber,
+      url: NGROK_URL + "/twiml",
+    });
+  } catch(err){
+    console.log('Error making call:', err);
+  }
 
   // console.log(currentCall.sid);
 }

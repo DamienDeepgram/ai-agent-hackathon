@@ -25,6 +25,8 @@ npm run start
 
 ```
 python main.py --store 'Best Buy' --location 'San Francisco' --goal 'Find out opening hours for Memorial Day.'
+
+python main.py --store 'Apple' --location 'Los Angeles' --goal 'Find out opening hours for today.'
 ```
 
 ## Wordware Prompt
