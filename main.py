@@ -6,8 +6,11 @@ from phonecall_tool import PhoneCallTool
 import json
 import requests
 import argparse
+# import agentops
 
 load_dotenv()
+
+# agentops.init(os.getenv('AGENTOPS_API_KEY'))
 
 #
 #   MultiOn
@@ -20,6 +23,7 @@ client = MultiOn(
 #
 #   WordWare
 #
+# @agentops.record_function('findClosestStore')
 def findClosestStore(store, location):
     prompt_id = os.getenv('WORDWARE_PROMPT_ID')
     api_key = os.getenv('WORDWARE_API_KEY')
@@ -65,12 +69,13 @@ def findPhoneNumber(store, address):
 #
 #   CrewAI + Groq
 #
-def callStore(store, address, phoneNumber, goal):
+def callStore(store, phoneNumber, goal):
     phonecall_tool_instance = PhoneCallTool()
+    payload = phoneNumber+'|'+goal
     caller = Agent(
         role='Caller',
         goal=goal,
-        backstory=(f'You are calling {store} to {goal}. Send the following string to the PhoneCallTool "{phoneNumber}|{goal}"'),
+        backstory=(f'You are calling {store} to {goal}. Send the following string to the PhoneCallTool "{payload}"'),
         verbose=True,
         allow_delegation=False,
         memory=True,
@@ -87,7 +92,7 @@ def callStore(store, address, phoneNumber, goal):
         agents=[caller],
         tasks=[task]
     )
-    result = crew.kickoff()
+    result = crew.kickoff({"goal": goal})
     return result
 
 def main():
@@ -123,9 +128,10 @@ def main():
     # PhoneCall Tool initiates a call
     print(f'[ACTION] CrewAI:')
     print(f'  Using PhoneCallTool to call: {phoneNumber}')
-    openingHours = callStore(store, address, phoneNumber, goal)
+    openingHours = callStore(store, phoneNumber, goal)
     print(f'CrewAI:')
     print(f'  Opening Hours - {openingHours}')
+    agentops.end_session('Success')
 
 if __name__ == '__main__':
     main()

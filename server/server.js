@@ -179,12 +179,16 @@ class MediaStream {
   }
 
   // Function to process incoming messages
-  processMessage(message) {
+  async processMessage(message) {
     if (message.type === "utf8") {
       let data = JSON.parse(message.utf8Data);
       if (data.event === "connected") {
         console.log("Twilio: Call Connected");
         // console.log("Twilio: Connected event received: ", data);
+
+        const recording = await client
+        .calls(currentCall.sid)
+        .recordings.create();
       }
       if (data.event === "start") {
         // console.log("Twilio: Start event received: ", data);
@@ -273,7 +277,7 @@ async function promptLLM(mediaStream, prompt) {
         if(chunk_message.toLowerCase().indexOf('goodbye') != -1){
           setTimeout(()=>{
             currentCall.update({ status: "completed" });
-          }, 3000)
+          }, 7000)
         }
       }
     }
@@ -390,7 +394,7 @@ const setupDeepgram = (mediaStream) => {
           if (data.speech_final) {
             const utterance = is_finals.join(" ");
             is_finals = [];
-            console.log(`[Person] ${utterance}`);
+            console.log(`[Person FINSIHED] ${utterance}`);
             llmStart = Date.now();
             pendingResponses[currentCallId].transcript += utterance + ' ';
             promptLLM(mediaStream, utterance, pendingResponses[currentCallId].goal); // Send the final transcript to OpenAI for response
@@ -399,7 +403,7 @@ const setupDeepgram = (mediaStream) => {
           //   console.log(`deepgram STT:  [Is Final] ${transcript}`);
           // }
         } else {
-          // console.log(`deepgram STT:    [Interim Result] ${transcript}`);
+          console.log(`[Person SPEAKING] ${transcript}`);
           if (speaking) {
             // console.log('Twilio: clear audio playback', streamSid);
             // Handles Barge In
